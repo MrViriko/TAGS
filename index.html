@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Factura XML</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: ghostwhite;
+            margin: 20px;
+            padding: 0;
+        }
+        .container {
+            max-width: 1000px;
+            background: linen;
+            padding: 40px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h2, h3 {
+            color: purple;
+            text-align: center;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .factura-box, .factura-display {
+            background: lavender;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+        .factura-container {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .form-group-x {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .form-group-x label {
+            flex: 1;
+            text-align: right;
+            margin-right: 10px;
+        }
+        .form-group-x input {
+            flex: 2;
+            width: auto;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            background-color: darkviolet;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .factura-info {
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+        .productos-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .productos-container input {
+            width: 30%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Generar Factura</h2>
+        <form id="xmlForm">
+            <div class="grid-container">
+                <div class="factura-box">
+                    <h3>Datos del Emisor</h3>
+                    <div class="form-group-x"><label>Nombre:</label> <input id="nombre" type="text" value="Jesus Tadeo Valle Gonzalez" readonly></div>
+                    <div class="form-group-x"><label>RFC:</label> <input id="rfc" <input type="text" value="0070107" readonly></div>
+                    <div class="form-group-x"><label>Regimen:</label> <input id ="regimen" <input type="text" value="General de Ley, Actividades empresariales, Incorporacion Fiscal" readonly></div>
+                    <div class="form-group-x"><label>Direccion:</label> <input id="direccion" <input type="text" value="Calle 20 entre Quiroz y Mora y 6 de abril, número 14" readonly></div>
+                </div>
+                <div class="factura-box">
+                    <h3>Datos de Factura</h3>
+                    <div class="form-group-x"><label>Folio:</label> <input type="text" id="numeroAleatorio" readonly></div>
+                    <div class="form-group-x"><label>Fecha:</label> <input type="text" id="fechaHoy" readonly></div>
+                    <div class="form-group-x"><label>Serie:</label> <input id="serie" type="text" value="XD" readonly></div>
+                </div>
+            </div>
+            <div class="factura-box">
+                <h3>Informacion del Cliente</h3>
+                    <input type="text" id="receptorNombre" placeholder="Nombre" required>
+                    <input type="text" id="receptorRFC" placeholder="RFC" required>
+                    <input type="text" id="receptorUsoCFDI" placeholder="Uso del CFDI" required>
+                    <input type="email" id="receptorEmail" placeholder="Correo Electrónico" required>
+                <h3>Forma de Pago</h3>
+                <select id="formaPago" required>
+                    <option value="Contado">Contado</option>
+                    <option value="Transferencia">Transferencia</option>
+                    <option value="T.C/T.D">T.C/T.D</option>
+                </select>
+                <h3>Moneda</h3>
+                <select id="moneda" required onchange="actualizarMultiplicador()">
+                    <option value="MXN">Pesos (MXN)</option>
+                    <option value="USD">Dólares (USD)</option>
+                </select>
+            </div>
+            <div class="factura-box">
+                <h3>Productos/Servicios</h3>
+                <div class="productos-container">
+                    <input type="number" id="cantidad" placeholder="Cantidad" required oninput="calcularImporteTotal()">
+                    <input type="text" id="descripcion" placeholder="Descripción" required>
+                    <input type="number" id="valor" placeholder="Valor" required oninput="calcularImporteTotal()">
+                    <input type="number" id="iva" placeholder="IVA (%)" value="16" oninput="calcularImporteTotal()">
+                    <input type="number" id="importeTotal" placeholder="Importe Total" required readonly>
+                </div>
+                <input type="hidden" id="folioFactura" value="1">
+                <input type="hidden" id="numeroFactura" value="1001">
+            </div>
+            <div class="button-container">
+                <button type="button" onclick="generarFactura()">Generar Factura</button>
+                <button type="button" onclick="agregarOtraFactura()">Agregar Otra Factura</button>
+            </div>
+        </form>
+
+        <div id="facturaContainer" class="factura-container">
+            <h2>Factura Generada</h2>
+            <div class="factura-info" id="facturaInfo"></div>
+            <div class="button-container">
+                <button onclick="descargarFactura()">Guardar Factura</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    function generarNumeroAleatorio() {
+        let numero = String(Math.floor(Math.random() * 10000000)).padStart(7, "0");
+        document.getElementById("numeroAleatorio").value = numero;
+    }
+
+    function generarFechaHoy() {
+        let fecha = new Date().toISOString().split('T')[0]; // Formato yyyy-mm-dd
+        document.getElementById("fechaHoy").value = fecha;
+    }
+
+    window.onload = function() {
+        generarNumeroAleatorio();
+        generarFechaHoy();
+    };
+
+    let multiplicador = 1;
+    function actualizarMultiplicador() {
+        let moneda = document.getElementById("moneda").value;
+        multiplicador = (moneda === "USD") ? 18 : 1;
+        calcularImporteTotal();
+    }
+
+    function calcularImporteTotal() {
+        let cantidad = parseFloat(document.getElementById("cantidad").value) || 0;
+        let valor = parseFloat(document.getElementById("valor").value) || 0;
+        let iva = parseFloat(document.getElementById("iva").value) || 0;
+        
+        let subtotal = cantidad * valor * multiplicador;
+        let ivaAmount = (subtotal * iva) / 100;
+        let importeTotal = subtotal + ivaAmount;
+        
+        document.getElementById("importeTotal").value = importeTotal.toFixed(2);
+    }
+
+    function generarFactura() {
+        let inputs = document.querySelectorAll("input, select");
+        for (let input of inputs) {
+            if (!input.value && input.id !== "importeTotal") {
+                alert("Por favor, completa todos los campos antes de generar la factura.");
+                return;
+            }
+        }
+
+        let facturaHTML = `
+            <p><strong>Folio:</strong> ${document.getElementById("numeroAleatorio").value}</p>
+            <p><strong>Serie:</strong> ${document.getElementById("serie").value}</p>
+            <p><strong>Fecha:</strong> ${document.getElementById("fechaHoy").value}</p>
+            <h3>Emisor</h3>
+            <p><strong>Nombre:</strong> ${document.getElementById("nombre").value}</p>
+            <p><strong>RFC:</strong> ${document.getElementById("rfc").value}</p>
+            <p><strong>Regimen Fiscal:</strong> ${document.getElementById("regimen").value}</p>
+            <p><strong>Direccion:</strong> ${document.getElementById("direccion").value}</p>
+            <h3>Receptor</h3>
+            <p><strong>Nombre:</strong> ${document.getElementById("receptorNombre").value}</p>
+            <p><strong>RFC:</strong> ${document.getElementById("receptorRFC").value}</p>
+            <p><strong>Uso CFDI:</strong> ${document.getElementById("receptorUsoCFDI").value}</p>
+            <p><strong>Correo Electrónico:</strong> ${document.getElementById("receptorEmail").value}</p>
+            <h3>Producto</h3>
+            <p><strong>Descripcion:</strong> ${document.getElementById("descripcion").value}</p> 
+            <p><strong>Cantidad:</strong> ${document.getElementById("cantidad").value}</p>
+            <p><strong>Valor:</strong> ${document.getElementById("valor").value}</p>
+            <p><strong>IVA</strong> ${document.getElementById("iva").value}</p>
+            <p><strong>Importe Total:</strong> ${document.getElementById("importeTotal").value}</p>
+        `;
+
+        document.getElementById("facturaInfo").innerHTML = facturaHTML;
+        document.getElementById("facturaContainer").style.display = "block";
+    }
+
+    function descargarFactura() {
+        let emisorNombre = document.getElementById("nombre").value;
+        let serie = document.getElementById("serie").value;
+        let emisorRFC = document.getElementById("rfc").value;
+        let emisorRegimen = document.getElementById("regimen").value;
+        let emisorDireccion = document.getElementById("direccion").value;
+        let receptorNombre = document.getElementById("receptorNombre").value;
+        let receptorRFC = document.getElementById("receptorRFC").value;
+        let receptorUsoCFDI = document.getElementById("receptorUsoCFDI").value;
+        let receptorEmail = document.getElementById("receptorEmail").value;
+        let fecha = document.getElementById("fechaHoy").value;
+        let formaPago = document.getElementById("formaPago").value;
+        let moneda = document.getElementById("moneda").value;
+        let cantidad = document.getElementById("cantidad").value;
+        let descripcion = document.getElementById("descripcion").value;
+        let valor = document.getElementById("valor").value;
+        let iva = document.getElementById("iva").value;
+        let importeTotal = document.getElementById("importeTotal").value;
+        let folio = document.getElementById("numeroAleatorio").value;
+
+        let xmlData = `<?xml version="1.0" encoding="UTF-8"?>
+<Factura>
+    <Datos>
+        <Folio>${folio}</Folio>
+        <Serie>${serie}</Serie>
+        <Fecha>${fecha}</Fecha>
+    </Datos>
+    <Emisor>
+        <Nombre>${emisorNombre}</Nombre>
+        <RFC>${emisorRFC}</RFC>
+        <RegimenFiscal>${emisorRegimen}</RegimenFiscal>
+        <DireccionFiscal>${emisorDireccion}</DireccionFiscal>
+    </Emisor>
+    <Receptor>
+        <Nombre>${receptorNombre}</Nombre>
+        <RFC>${receptorRFC}</RFC>
+        <UsoCFDI>${receptorUsoCFDI}</UsoCFDI>
+        <Correo>${receptorEmail}</Correo>
+    </Receptor>
+    <Detalles>
+        <FormaPago>${formaPago}</FormaPago>
+        <Moneda>${moneda}</Moneda>
+        <ProductoServicio>
+            <Cantidad>${cantidad}</Cantidad>
+            <Descripcion>${descripcion}</Descripcion>
+            <Valor>${valor}</Valor>
+            <IVA>${iva}</IVA>
+            <ImporteTotal>${importeTotal}</ImporteTotal>
+        </ProductoServicio>
+    </Detalles>
+</Factura>
+`;
+
+        let blob = new Blob([xmlData], { type: 'application/xml' });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'factura.xml';
+        link.click();
+    }
+
+    function agregarOtraFactura() {
+        document.getElementById("xmlForm").reset();
+        document.getElementById("facturaContainer").style.display = "none";
+        // Regenerar fecha y folio al reiniciar el formulario
+        generarNumeroAleatorio();
+        generarFechaHoy();
+    }
+</script>
+
