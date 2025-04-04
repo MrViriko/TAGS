@@ -1,300 +1,153 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8">
+    <meta name="description" content="Meta tags, Qué son, Para qué se usan y Cómo usarlas.">
+    <meta name="keywords" content="meta tag, html, codigo, tag, meta">
+    
+    <meta property="og:title" content="Informacion sobre Meta Tags">
+    <meta property="og:description" content="Lo que necesitas saber sobre las Meta tags">
+    <meta property="og:image" content="https://pbs.twimg.com/media/FD2kH79XEAEuDiO?format=jpg&name=large">
+    <meta property="og:url" content="https://mrviriko.github.io/TAGS/">
+    <meta property="og:type" content="website">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Informacion sobre las Meta Tags">
+    <meta name="twitter:description" content="Lo que necesitas saber sobre las Meta Tags">
+    <meta name="twitter:image" content="https://pbs.twimg.com/media/FD2kH79XEAEuDiO?format=jpg&name=large">
+    <meta name="twitter:site" content="@MrViriko77">
+  
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Tadeo Valle">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generar Factura XML</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: ghostwhite;
-            margin: 20px;
-            padding: 0;
-        }
-        .container {
-            max-width: 1000px;
-            background: linen;
-            padding: 40px;
-            margin: auto;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        }
-        h2, h3 {
-            color: purple;
-            text-align: center;
-        }
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .factura-box, .factura-display {
-            background: lavender;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
-        }
-        .factura-container {
-            display: none;
-            margin-top: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        }
-        .form-group-x {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .form-group-x label {
-            flex: 1;
-            text-align: right;
-            margin-right: 10px;
-        }
-        .form-group-x input {
-            flex: 2;
-            width: auto;
-        }
-        .button-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        button {
-            background-color: darkviolet;
-            color: white;
-            padding: 15px 25px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .factura-info {
-            background: #fff;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
-            font-size: 14px;
-        }
-        .productos-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-        .productos-container input {
-            width: 30%;
-        }
-    </style>
+  <title>Meta Tags</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: lavender;
+    }
+
+    .header {
+      background-color: lightsteelblue;
+      color: white;
+      padding: 2rem;
+      font-size: 1.5rem;
+      position: relative;
+      height: 150px;
+    }
+
+    .top-left-image {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 160px;
+      height: auto;
+      z-index: 10;
+    }
+
+    .header-title {
+      font-size: 60px;
+      text-align: center;
+      line-height: 80px; 
+      color: black;
+    }
+
+    .content {
+      max-width: 900px;
+      margin: 2rem auto;
+      background-color: thistle;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    h1, h2 {
+      color: #333;
+    }
+
+    p {
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .insert-image {
+      display: block;
+      margin: 2rem auto;
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Generar Factura</h2>
-        <form id="xmlForm">
-            <div class="grid-container">
-                <div class="factura-box">
-                    <h3>Datos del Emisor</h3>
-                    <div class="form-group-x"><label>Nombre:</label> <input id="nombre" type="text" value="Jesus Tadeo Valle Gonzalez" readonly></div>
-                    <div class="form-group-x"><label>RFC:</label> <input id="rfc" <input type="text" value="0070107" readonly></div>
-                    <div class="form-group-x"><label>Regimen:</label> <input id ="regimen" <input type="text" value="General de Ley, Actividades empresariales, Incorporacion Fiscal" readonly></div>
-                    <div class="form-group-x"><label>Direccion:</label> <input id="direccion" <input type="text" value="Calle 20 entre Quiroz y Mora y 6 de abril, número 14" readonly></div>
-                </div>
-                <div class="factura-box">
-                    <h3>Datos de Factura</h3>
-                    <div class="form-group-x"><label>Folio:</label> <input type="text" id="numeroAleatorio" readonly></div>
-                    <div class="form-group-x"><label>Fecha:</label> <input type="text" id="fechaHoy" readonly></div>
-                    <div class="form-group-x"><label>Serie:</label> <input id="serie" type="text" value="XD" readonly></div>
-                </div>
-            </div>
-            <div class="factura-box">
-                <h3>Informacion del Cliente</h3>
-                    <input type="text" id="receptorNombre" placeholder="Nombre" required>
-                    <input type="text" id="receptorRFC" placeholder="RFC" required>
-                    <input type="text" id="receptorUsoCFDI" placeholder="Uso del CFDI" required>
-                    <input type="email" id="receptorEmail" placeholder="Correo Electrónico" required>
-                <h3>Forma de Pago</h3>
-                <select id="formaPago" required>
-                    <option value="Contado">Contado</option>
-                    <option value="Transferencia">Transferencia</option>
-                    <option value="T.C/T.D">T.C/T.D</option>
-                </select>
-                <h3>Moneda</h3>
-                <select id="moneda" required onchange="actualizarMultiplicador()">
-                    <option value="MXN">Pesos (MXN)</option>
-                    <option value="USD">Dólares (USD)</option>
-                </select>
-            </div>
-            <div class="factura-box">
-                <h3>Productos/Servicios</h3>
-                <div class="productos-container">
-                    <input type="number" id="cantidad" placeholder="Cantidad" required oninput="calcularImporteTotal()">
-                    <input type="text" id="descripcion" placeholder="Descripción" required>
-                    <input type="number" id="valor" placeholder="Valor" required oninput="calcularImporteTotal()">
-                    <input type="number" id="iva" placeholder="IVA (%)" value="16" oninput="calcularImporteTotal()">
-                    <input type="number" id="importeTotal" placeholder="Importe Total" required readonly>
-                </div>
-                <input type="hidden" id="folioFactura" value="1">
-                <input type="hidden" id="numeroFactura" value="1001">
-            </div>
-            <div class="button-container">
-                <button type="button" onclick="generarFactura()">Generar Factura</button>
-                <button type="button" onclick="agregarOtraFactura()">Agregar Otra Factura</button>
-            </div>
-        </form>
 
-        <div id="facturaContainer" class="factura-container">
-            <h2>Factura Generada</h2>
-            <div class="factura-info" id="facturaInfo"></div>
-            <div class="button-container">
-                <button onclick="descargarFactura()">Guardar Factura</button>
-            </div>
-        </div>
-    </div>
+  <!-- Header -->
+  <div class="header">
+    <img src="https://www.conalep.edu.mx/sites/default/files/micrositios/coloquiodual/logotipos/logo_conalep.png" alt="Logo" class="top-left-image">
+    <div class="header-title">Meta Tags</div>
+  </div>
 
-<script>
-    function generarNumeroAleatorio() {
-        let numero = String(Math.floor(Math.random() * 10000000)).padStart(7, "0");
-        document.getElementById("numeroAleatorio").value = numero;
-    }
+  <!-- Contenido principal en un cuadro -->
+  <div class="content">
+    <h1>¿Qué son?</h1>
+    <p>Un meta tag (o "metaetiqueta" en español) es un elemento HTML que se utiliza para proporcionar información sobre una página web a los navegadores, motores de búsqueda y otras aplicaciones. Los metatags no son visibles para los usuarios, pero son cruciales para la optimización de motores de búsqueda (SEO) y la gestión del contenido web.</p>
 
-    function generarFechaHoy() {
-        let fecha = new Date().toISOString().split('T')[0]; // Formato yyyy-mm-dd
-        document.getElementById("fechaHoy").value = fecha;
-    }
+<img src="https://www.inmotionhosting.com/support/wp-content/uploads/2011/09/edu_website-design_104_meta-tags_meta-tag-explained.gif">
 
-    window.onload = function() {
-        generarNumeroAleatorio();
-        generarFechaHoy();
-    };
+    <h2>¿Para qué se usan los meta tags?</h2>
+    
+<p> 1. SEO (Optimización para Motores de Búsqueda): Los motores de búsqueda, como Google, utilizan los metatags para entender mejor el contenido de la página y cómo debería clasificarse. Esto incluye metatags como el título de la página (<meta name="title">) y la descripción (<meta name="description">). </p>
 
-    let multiplicador = 1;
-    function actualizarMultiplicador() {
-        let moneda = document.getElementById("moneda").value;
-        multiplicador = (moneda === "USD") ? 18 : 1;
-        calcularImporteTotal();
-    }
+<p> 2. Control de comportamiento del navegador: Algunas metaetiquetas pueden ayudar a definir cómo se debe mostrar una página web o cómo debe comportarse el navegador al interactuar con la página (por ejemplo, el meta tag para establecer la codificación de caracteres).</p>
 
-    function calcularImporteTotal() {
-        let cantidad = parseFloat(document.getElementById("cantidad").value) || 0;
-        let valor = parseFloat(document.getElementById("valor").value) || 0;
-        let iva = parseFloat(document.getElementById("iva").value) || 0;
-        
-        let subtotal = cantidad * valor * multiplicador;
-        let ivaAmount = (subtotal * iva) / 100;
-        let importeTotal = subtotal + ivaAmount;
-        
-        document.getElementById("importeTotal").value = importeTotal.toFixed(2);
-    }
+<p>3. Redes sociales y otras aplicaciones: Se pueden usar para controlar cómo se ve una página cuando se comparte en plataformas sociales (por ejemplo, usando Open Graph para Facebook).</p>
 
-    function generarFactura() {
-        let inputs = document.querySelectorAll("input, select");
-        for (let input of inputs) {
-            if (!input.value && input.id !== "importeTotal") {
-                alert("Por favor, completa todos los campos antes de generar la factura.");
-                return;
-            }
-        }
+<p>4. Definir el autor o la fecha de creación: Se puede usar para identificar al creador del contenido, la fecha de la última actualización, etc.</p>
 
-        let facturaHTML = `
-            <p><strong>Folio:</strong> ${document.getElementById("numeroAleatorio").value}</p>
-            <p><strong>Serie:</strong> ${document.getElementById("serie").value}</p>
-            <p><strong>Fecha:</strong> ${document.getElementById("fechaHoy").value}</p>
-            <h3>Emisor</h3>
-            <p><strong>Nombre:</strong> ${document.getElementById("nombre").value}</p>
-            <p><strong>RFC:</strong> ${document.getElementById("rfc").value}</p>
-            <p><strong>Regimen Fiscal:</strong> ${document.getElementById("regimen").value}</p>
-            <p><strong>Direccion:</strong> ${document.getElementById("direccion").value}</p>
-            <h3>Receptor</h3>
-            <p><strong>Nombre:</strong> ${document.getElementById("receptorNombre").value}</p>
-            <p><strong>RFC:</strong> ${document.getElementById("receptorRFC").value}</p>
-            <p><strong>Uso CFDI:</strong> ${document.getElementById("receptorUsoCFDI").value}</p>
-            <p><strong>Correo Electrónico:</strong> ${document.getElementById("receptorEmail").value}</p>
-            <h3>Producto</h3>
-            <p><strong>Descripcion:</strong> ${document.getElementById("descripcion").value}</p> 
-            <p><strong>Cantidad:</strong> ${document.getElementById("cantidad").value}</p>
-            <p><strong>Valor:</strong> ${document.getElementById("valor").value}</p>
-            <p><strong>IVA</strong> ${document.getElementById("iva").value}</p>
-            <p><strong>Importe Total:</strong> ${document.getElementById("importeTotal").value}</p>
-        `;
+    <!-- Imagen dentro del cuadro -->
+    <img src="https://es.ryte.com/wiki/img_auth.php/c/c8/600x400-MetaEtiquetas-es-01.png" alt="Descripción de la imagen" class="insert-image">
 
-        document.getElementById("facturaInfo").innerHTML = facturaHTML;
-        document.getElementById("facturaContainer").style.display = "block";
-    }
+    <h2>¿Como se usan?</h2>
+<p> 1. Meta descripción
+Es una breve descripción del contenido de la página web, útil para los motores de búsqueda.
+<meta name="description" content="Esta es una página de ejemplo sobre los meta tags en HTML."> </p>
 
-    function descargarFactura() {
-        let emisorNombre = document.getElementById("nombre").value;
-        let serie = document.getElementById("serie").value;
-        let emisorRFC = document.getElementById("rfc").value;
-        let emisorRegimen = document.getElementById("regimen").value;
-        let emisorDireccion = document.getElementById("direccion").value;
-        let receptorNombre = document.getElementById("receptorNombre").value;
-        let receptorRFC = document.getElementById("receptorRFC").value;
-        let receptorUsoCFDI = document.getElementById("receptorUsoCFDI").value;
-        let receptorEmail = document.getElementById("receptorEmail").value;
-        let fecha = document.getElementById("fechaHoy").value;
-        let formaPago = document.getElementById("formaPago").value;
-        let moneda = document.getElementById("moneda").value;
-        let cantidad = document.getElementById("cantidad").value;
-        let descripcion = document.getElementById("descripcion").value;
-        let valor = document.getElementById("valor").value;
-        let iva = document.getElementById("iva").value;
-        let importeTotal = document.getElementById("importeTotal").value;
-        let folio = document.getElementById("numeroAleatorio").value;
+<p> 2. Meta palabras clave (aunque menos utilizado hoy en día)
+Se utilizaba para proporcionar palabras clave relacionadas con el contenido de la página.
+<meta name="keywords" content="meta tags, SEO, HTML, etiquetas HTML"> </p>
 
-        let xmlData = `<?xml version="1.0" encoding="UTF-8"?>
-<Factura>
-    <Datos>
-        <Folio>${folio}</Folio>
-        <Serie>${serie}</Serie>
-        <Fecha>${fecha}</Fecha>
-    </Datos>
-    <Emisor>
-        <Nombre>${emisorNombre}</Nombre>
-        <RFC>${emisorRFC}</RFC>
-        <RegimenFiscal>${emisorRegimen}</RegimenFiscal>
-        <DireccionFiscal>${emisorDireccion}</DireccionFiscal>
-    </Emisor>
-    <Receptor>
-        <Nombre>${receptorNombre}</Nombre>
-        <RFC>${receptorRFC}</RFC>
-        <UsoCFDI>${receptorUsoCFDI}</UsoCFDI>
-        <Correo>${receptorEmail}</Correo>
-    </Receptor>
-    <Detalles>
-        <FormaPago>${formaPago}</FormaPago>
-        <Moneda>${moneda}</Moneda>
-        <ProductoServicio>
-            <Cantidad>${cantidad}</Cantidad>
-            <Descripcion>${descripcion}</Descripcion>
-            <Valor>${valor}</Valor>
-            <IVA>${iva}</IVA>
-            <ImporteTotal>${importeTotal}</ImporteTotal>
-        </ProductoServicio>
-    </Detalles>
-</Factura>
-`;
+<p> 3. Meta de autor
+Indica el autor de la página web.
+<meta name="author" content="Juan Pérez"> </p>
 
-        let blob = new Blob([xmlData], { type: 'application/xml' });
-        let link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'factura.xml';
-        link.click();
-    }
+<p> 4. Meta de codificación de caracteres
+Especifica la codificación de caracteres usada en la página.
+<meta charset="UTF-8"> </p>
 
-    function agregarOtraFactura() {
-        document.getElementById("xmlForm").reset();
-        document.getElementById("facturaContainer").style.display = "none";
-        // Regenerar fecha y folio al reiniciar el formulario
-        generarNumeroAleatorio();
-        generarFechaHoy();
-    }
-</script>
+<p> 5. Meta de vista en dispositivos móviles
+Permite que la página web se vea adecuadamente en dispositivos móviles ajustando la escala y el tamaño de la página.
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> </p>
 
+<p> 6. Meta para controlar el tiempo de expiración
+Puede indicar si la página debe ser recargada, o no, en ciertos intervalos de tiempo.
+<meta http-equiv="refresh" content="30"> </p>
+
+<p> 7. Meta para compartir en redes sociales (Open Graph)
+Para mejorar cómo se visualiza una página web cuando se comparte en redes sociales como Facebook o Twitter.
+<meta property="og:title" content="Título de la página en redes sociales">
+<meta property="og:description" content="Descripción corta sobre la página que aparecerá al compartirla.">
+<meta property="og:image" content="URL de la imagen que se mostrará al compartir"> </p>
+
+
+    <!-- Otra imagen -->
+    <img src="https://www.hostingplus.mx/wp-content/uploads/2024/05/meta-tag.jpg">
+  </div>
+
+</body>
+</html>
